@@ -1,21 +1,16 @@
 # Kubernetes installation on bare-metal
-Kubernetes installation on bare-metal, Ubuntu 20.04 is used for master and Ubuntu 18.04 used for worker nodes. You can use VM as a node. 
+Kubernetes installation on bare-metal, Ubuntu 20.04 is used for master and Ubuntu 18.04 used for worker nodes. You can use VM as a node. kubeadm=1.21.1-00 kubelet=1.21.1-00 kubectl=1.21.1-00
 
-## Required steps for the master and each worker node
+# Required steps for the master and each worker node
 
 Disable the swap (Only once) and check it from /etc/fstab.
 ``` 
 swapoff -a
 ```
-
+## DOCKER
 Google apt repository key added (Only once).
 ```
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-```
-
-Kubernetes apt repository added (Only once).
-```
-echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
 ```
 
 Install Docker. 
@@ -47,10 +42,16 @@ Enable it to run the docker service when the system start.
 sudo systemctl enable docker.service
 systemctl restart docker
 ```
+## KUBERNETES
+
+Kubernetes apt repository added (Only once).
+```
+echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+```
 
 Install Kubernetes.  
 ```
-sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt update && sudo apt install -y kubeadm=1.21.1-00 kubelet=1.21.1-00 kubectl=1.21.1-00
 ```
 
 Enable it to run the kubelet service when the system start.
@@ -65,7 +66,7 @@ sudo systemctl status kubelet.service
 sudo systemctl status docker.service
 ```
 
-## Required steps for the master
+# Required steps for the master
 
 Download calico.yaml file and determine pod-network-cidr according to calico.yaml file.
 ```
@@ -103,7 +104,7 @@ Regenerate a token for worker nodes.
 ```
 kubeadm token create
 ```
-## Required steps for each worker node 
+# Required steps for each worker node 
 
 Initializes a Kubernetes worker node and joins it to the cluster while using given token from master.  
 ```
